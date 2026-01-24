@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -6,6 +5,9 @@ const cors = require('cors');
 const connectDB = require('./config/database');
 const itemsRoutes = require('./routes/items');
 const ordersRoutes = require('./routes/orders');
+
+// Import Swagger
+const { swaggerUi, swaggerSpec } = require('./swagger');
 
 const app = express();
 
@@ -16,6 +18,9 @@ app.use(express.json());
 // Routes
 app.use('/items', itemsRoutes);
 app.use('/orders', ordersRoutes);
+
+// Swagger docs route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Default route
 app.get('/', (req, res) => {
@@ -34,6 +39,7 @@ connectDB()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📄 Swagger docs available at http://localhost:${PORT}/api-docs`);
     });
   })
   .catch((err) => {
