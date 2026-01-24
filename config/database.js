@@ -1,34 +1,19 @@
-const { MongoClient } = require('mongodb');
+// config/database.js
+const mongoose = require('mongoose');
 
-let database;
+const connectDB = async () => {
+  try {
+    if (!process.env.MONGODB_URL) {
+      throw new Error('MONGODB_URL is missing');
+    }
 
-const initDb = (callback) => {
-  if (database) {
-    console.log('DB already initialized');
-    return callback(null, database);
+    await mongoose.connect(process.env.MONGODB_URL);
+
+    console.log('✅ MongoDB connected');
+  } catch (error) {
+    console.error('❌ MongoDB connection failed:', error.message);
+    process.exit(1);
   }
-
-  const mongoUrl = process.env.MONGODB_URL;
-
-  if (!mongoUrl) {
-    return callback(new Error('MONGODB_URL is not defined in .env'));
-  }
-
-  MongoClient.connect(mongoUrl)
-    .then((client) => {
-      database = client.db();
-      callback(null, database);
-    })
-    .catch((err) => {
-      callback(err);
-    });
 };
 
-const getDb = () => {
-  if (!database) {
-    throw new Error('Database not initialized');
-  }
-  return database;
-};
-
-module.exports = { initDb, getDb };
+module.exports = connectDB;
