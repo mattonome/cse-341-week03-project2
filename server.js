@@ -17,15 +17,26 @@ app.use(express.json());
 app.use('/items', itemsRoutes);
 app.use('/orders', ordersRoutes);
 
+// Default route
 app.get('/', (req, res) => {
   res.send('Week 03 Project API is running');
 });
 
-// Start server ONLY after DB connects
+// Check environment variables before starting
 const PORT = process.env.PORT || 3000;
+if (!process.env.MONGODB_URL || !process.env.DB_NAME) {
+  console.error('❌ MONGODB_URL or DB_NAME is missing in .env');
+  process.exit(1);
+}
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+// Start server only after DB connects
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Server failed to start due to DB connection error:', err);
+    process.exit(1);
   });
-});
