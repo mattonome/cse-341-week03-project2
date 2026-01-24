@@ -1,17 +1,22 @@
-// config/database.js
 const { MongoClient } = require('mongodb');
 
 let database;
 
 const initDb = (callback) => {
   if (database) {
-    console.log('Database already initialized');
+    console.log('DB already initialized');
     return callback(null, database);
   }
 
-  MongoClient.connect(process.env.MONGODB_URI)
+  const mongoUrl = process.env.MONGODB_URL;
+
+  if (!mongoUrl) {
+    return callback(new Error('MONGODB_URL is not defined in .env'));
+  }
+
+  MongoClient.connect(mongoUrl)
     .then((client) => {
-      database = client.db(); // default DB
+      database = client.db();
       callback(null, database);
     })
     .catch((err) => {
