@@ -44,7 +44,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/items', require('./routes/items'));
 app.use('/orders', require('./routes/orders'));
 
-// Start server
+// Start server now
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
