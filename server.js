@@ -1,50 +1,40 @@
 // server.js
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+// Main entry point for the Week 03 Project 2 API
 
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+require('dotenv').config(); // Load environment variables from .env
+const express = require('express');
+const cors = require('cors');
+const { initDb } = require('./config/database'); // Your MongoDB connection setup
+
+const itemsRoutes = require('./routes/items');
+const ordersRoutes = require('./routes/orders');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.json());
-app.use(express.json());
+app.use(cors()); // Enable CORS for all origins
+app.use(express.json()); // Parse JSON request bodies
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URL, {
-  dbName: process.env.DB_NAME || 'w03project2'
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Connect to MongoDB and start server
+initDb((err) => {
+  if (err) {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1); // Stop the app if DB connection fails
+  }
 
-// Swagger configuration
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Week 03 Project API',
-      version: '1.0.0',
-      description: 'CRUD API for Items and Orders',
-    },
-    servers: [
-      { url: 'http://localhost:' + port }
-    ],
-  },
-  apis: ['./routes/*.js'], // Swagger will read JSDoc comments in routes folder
-};
+  console.log('MongoDB connected!');
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  // Routes
+  app.use('/items', itemsRoutes);    // CRUD operations for Items
+  app.use('/orders', ordersRoutes);  // CRUD operations for Orders
 
-// Routes
-app.use('/items', require('./routes/items'));
-app.use('/orders', require('./routes/orders'));
+  // Default route for testing
+  app.get('/', (req, res) => {
+    res.send('Week 03 Project API is running!');
+  });
 
-// Start server now
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
