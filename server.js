@@ -1,10 +1,11 @@
-// server.js
-// Main entry point for the Week 03 Project 2 API
+require('dotenv').config();
 
-require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const cors = require('cors');
-const { initDb } = require('./config/database'); // Your MongoDB connection setup
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerSpec = require('./swagger');
+const { initDb } = require('./config/database');
 
 const itemsRoutes = require('./routes/items');
 const ordersRoutes = require('./routes/orders');
@@ -12,29 +13,33 @@ const ordersRoutes = require('./routes/orders');
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS for all origins
-app.use(express.json()); // Parse JSON request bodies
+app.use(cors());
+app.use(express.json());
 
-// Connect to MongoDB and start server
+// Swagger Docs Route ✅
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Root test route
+app.get('/', (req, res) => {
+  res.send('Week 03 Project API is running!');
+});
+
+// Routes
+app.use('/items', itemsRoutes);
+app.use('/orders', ordersRoutes);
+
+// Start server AFTER DB connection
+const PORT = process.env.PORT || 3000;
+
 initDb((err) => {
   if (err) {
-    console.error('Failed to connect to MongoDB:', err);
-    process.exit(1); // Stop the app if DB connection fails
+    console.error('MongoDB connection failed:', err);
+    process.exit(1);
   }
 
-  console.log('MongoDB connected!');
+  console.log('MongoDB connected');
 
-  // Routes
-  app.use('/items', itemsRoutes);    // CRUD operations for Items
-  app.use('/orders', ordersRoutes);  // CRUD operations for Orders
-
-  // Default route for testing
-  app.get('/', (req, res) => {
-    res.send('Week 03 Project API is running!');
-  });
-
-  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 });

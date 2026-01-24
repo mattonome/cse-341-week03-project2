@@ -1,16 +1,47 @@
-// routes/items.js
 const express = require('express');
 const router = express.Router();
 const itemsController = require('../controllers/items');
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Item:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         price:
+ *           type: number
+ *         quantity:
+ *           type: number
+ *         category:
+ *           type: string
+ *         supplier:
+ *           type: string
+ *         inStock:
+ *           type: boolean
+ */
+
+/**
+ * @swagger
  * /items:
  *   get:
  *     summary: Get all items
+ *     tags: [Items]
  *     responses:
  *       200:
  *         description: Successfully retrieved items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Item'
  */
 router.get('/', itemsController.getAll);
 
@@ -19,6 +50,7 @@ router.get('/', itemsController.getAll);
  * /items/{id}:
  *   get:
  *     summary: Get a single item by ID
+ *     tags: [Items]
  *     parameters:
  *       - in: path
  *         name: id
@@ -28,6 +60,10 @@ router.get('/', itemsController.getAll);
  *     responses:
  *       200:
  *         description: Successfully retrieved item
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Item'
  *       404:
  *         description: Item not found
  */
@@ -38,20 +74,13 @@ router.get('/:id', itemsController.getSingle);
  * /items:
  *   post:
  *     summary: Create a new item
+ *     tags: [Items]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name: { type: string }
- *               description: { type: string }
- *               price: { type: number }
- *               quantity: { type: number }
- *               category: { type: string }
- *               supplier: { type: string }
- *               inStock: { type: boolean }
+ *             $ref: '#/components/schemas/Item'
  *     responses:
  *       201:
  *         description: Item created successfully
@@ -63,6 +92,7 @@ router.post('/', itemsController.createItem);
  * /items/{id}:
  *   put:
  *     summary: Update an existing item
+ *     tags: [Items]
  *     parameters:
  *       - in: path
  *         name: id
@@ -74,7 +104,7 @@ router.post('/', itemsController.createItem);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
+ *             $ref: '#/components/schemas/Item'
  *     responses:
  *       200:
  *         description: Item updated successfully
@@ -88,6 +118,7 @@ router.put('/:id', itemsController.updateItem);
  * /items/{id}:
  *   delete:
  *     summary: Delete an item
+ *     tags: [Items]
  *     parameters:
  *       - in: path
  *         name: id
