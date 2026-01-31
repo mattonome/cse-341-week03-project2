@@ -27,7 +27,7 @@ const seedOrders = async (items) => [
   { itemId: items[2]._id, quantity: 3, customer: 'Charlie Brown', address: '789 Pine Rd, TX', status: 'delivered', totalPrice: items[2].price*3, notes: 'Gift wrap' }
 ];
 
-// ---------- Seed function ----------
+// ---------- Seed function ------------
 const seedDatabase = async () => {
   try {
     await Item.deleteMany({});
