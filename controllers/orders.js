@@ -69,6 +69,7 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+// Export now
 module.exports = {
   getAll,
   getSingle,
