@@ -1,6 +1,6 @@
-// routes/orders.js
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const ordersController = require('../controllers/orders');
 
 /**
@@ -19,17 +19,6 @@ router.get('/', ordersController.getAll);
  * /orders/{id}:
  *   get:
  *     summary: Get a single order by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successfully retrieved order
- *       404:
- *         description: Order not found
  */
 router.get('/:id', ordersController.getSingle);
 
@@ -38,66 +27,46 @@ router.get('/:id', ordersController.getSingle);
  * /orders:
  *   post:
  *     summary: Create a new order
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               itemId: { type: string }
- *               quantity: { type: number }
- *               customer: { type: string }
- *               address: { type: string }
- *               status: { type: string }
- *               totalPrice: { type: number }
- *               notes: { type: string }
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Order created successfully
+ *       401:
+ *         description: Unauthorized
  */
-router.post('/', ordersController.createOrder);
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  ordersController.createOrder
+);
 
 /**
  * @swagger
  * /orders/{id}:
  *   put:
  *     summary: Update an existing order
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *     responses:
- *       200:
- *         description: Order updated successfully
- *       404:
- *         description: Order not found
+ *     security:
+ *       - bearerAuth: []
  */
-router.put('/:id', ordersController.updateOrder);
+router.put(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  ordersController.updateOrder
+);
 
 /**
  * @swagger
  * /orders/{id}:
  *   delete:
  *     summary: Delete an order
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       204:
- *         description: Order deleted successfully
+ *     security:
+ *       - bearerAuth: []
  */
-router.delete('/:id', ordersController.deleteOrder);
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  ordersController.deleteOrder
+);
 
 module.exports = router;

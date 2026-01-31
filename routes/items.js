@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const itemsController = require('../controllers/items');
 
 /**
@@ -36,12 +37,6 @@ const itemsController = require('../controllers/items');
  *     responses:
  *       200:
  *         description: Successfully retrieved items
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Item'
  */
 router.get('/', itemsController.getAll);
 
@@ -51,21 +46,6 @@ router.get('/', itemsController.getAll);
  *   get:
  *     summary: Get a single item by ID
  *     tags: [Items]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successfully retrieved item
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Item'
- *       404:
- *         description: Item not found
  */
 router.get('/:id', itemsController.getSingle);
 
@@ -75,17 +55,21 @@ router.get('/:id', itemsController.getSingle);
  *   post:
  *     summary: Create a new item
  *     tags: [Items]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Item'
  *     responses:
  *       201:
  *         description: Item created successfully
+ *       401:
+ *         description: Unauthorized
  */
-router.post('/', itemsController.createItem);
+router.post(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  itemsController.createItem
+);
 
 /**
  * @swagger
@@ -93,25 +77,14 @@ router.post('/', itemsController.createItem);
  *   put:
  *     summary: Update an existing item
  *     tags: [Items]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Item'
- *     responses:
- *       200:
- *         description: Item updated successfully
- *       404:
- *         description: Item not found
+ *     security:
+ *       - bearerAuth: []
  */
-router.put('/:id', itemsController.updateItem);
+router.put(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  itemsController.updateItem
+);
 
 /**
  * @swagger
@@ -119,16 +92,13 @@ router.put('/:id', itemsController.updateItem);
  *   delete:
  *     summary: Delete an item
  *     tags: [Items]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       204:
- *         description: Item deleted successfully
+ *     security:
+ *       - bearerAuth: []
  */
-router.delete('/:id', itemsController.deleteItem);
+router.delete(
+  '/:id',
+  passport.authenticate('jwt', { session: false }),
+  itemsController.deleteItem
+);
 
 module.exports = router;

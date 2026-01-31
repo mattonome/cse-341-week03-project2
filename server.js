@@ -1,48 +1,57 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
-const connectDB = require('./config/database');
-const itemsRoutes = require('./routes/items');
-const ordersRoutes = require('./routes/orders');
-
-// Import Swagger
-const { swaggerUi, swaggerSpec } = require('./swagger');
+const passport = require('passport');
 
 const app = express();
+
+// Database
+const connectDB = require('./config/database');
+
+// Routes
+const itemsRoutes = require('./routes/items');
+const ordersRoutes = require('./routes/orders');
+const authRoutes = require('./routes/authRoutes');
+
+// Swagger
+const { swaggerUi, swaggerSpec } = require('./swagger');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+// Passport
+app.use(passport.initialize());
+require('./config/passport')(passport);
+
 // Routes
+app.use('/auth', authRoutes);
 app.use('/items', itemsRoutes);
 app.use('/orders', ordersRoutes);
 
-// Swagger docs route
+// Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Default route
+// Default
 app.get('/', (req, res) => {
   res.send('Week 03 Project API is running');
 });
 
-// Check environment variables before starting
+// Env check
 const PORT = process.env.PORT || 3000;
-if (!process.env.MONGODB_URL || !process.env.DB_NAME) {
-  console.error('❌ MONGODB_URL or DB_NAME is missing in .env');
+if (!process.env.MONGODB_URL || !process.env.DB_NAME || !process.env.JWT_SECRET) {
+  console.error('❌ Missing environment variables');
   process.exit(1);
 }
 
-// Start server only after DB connects
+// Start server
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📄 Swagger docs available at http://localhost:${PORT}/api-docs`);
     });
   })
   .catch((err) => {
-    console.error('❌ Server failed to start due to DB connection error:', err);
+    console.error('❌ DB connection failed:', err);
     process.exit(1);
   });

@@ -1,5 +1,5 @@
 // swagger.js
-// Swagger configuration for Week 03 Project 2
+// Swagger configuration for Week 03 Project 2 + Week 04 Authentication
 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -10,7 +10,7 @@ const options = {
     info: {
       title: 'CSE 341 Week 03 Project 2 API',
       version: '1.0.0',
-      description: 'Items and Orders API'
+      description: 'Items and Orders API with Authentication'
     },
     servers: [
       {
@@ -21,8 +21,21 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Local server'
       }
-    ]
+    ],
+
+    // 🔐 WEEK 04 ADDITION (OAuth / JWT)
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    }
   },
+
+  // Scan routes for Swagger comments
   apis: ['./routes/*.js']
 };
 
