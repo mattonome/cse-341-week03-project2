@@ -37,6 +37,16 @@ app.get('/', (req, res) => {
   res.send('Week 03 Project API is running');
 });
 
+
+
+// Temporary check
+// console.log('ENV CHECK:', {
+//   MONGODB_URL: process.env.MONGODB_URL,
+//   DB_NAME: process.env.DB_NAME,
+//   JWT_SECRET: process.env.JWT_SECRET,
+// });
+
+
 // Env check
 const PORT = process.env.PORT || 3000;
 if (!process.env.MONGODB_URL || !process.env.DB_NAME || !process.env.JWT_SECRET) {
