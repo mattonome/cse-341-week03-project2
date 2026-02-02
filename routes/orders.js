@@ -8,9 +8,7 @@ const ordersController = require('../controllers/orders');
  * /orders:
  *   get:
  *     summary: Get all orders
- *     responses:
- *       200:
- *         description: Successfully retrieved orders
+ *     tags: [Orders]
  */
 router.get('/', ordersController.getAll);
 
@@ -18,7 +16,8 @@ router.get('/', ordersController.getAll);
  * @swagger
  * /orders/{id}:
  *   get:
- *     summary: Get a single order by ID
+ *     summary: Get a single order
+ *     tags: [Orders]
  */
 router.get('/:id', ordersController.getSingle);
 
@@ -26,14 +25,10 @@ router.get('/:id', ordersController.getSingle);
  * @swagger
  * /orders:
  *   post:
- *     summary: Create a new order
+ *     summary: Create an order (AUTH REQUIRED)
+ *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
- *     responses:
- *       201:
- *         description: Order created successfully
- *       401:
- *         description: Unauthorized
  */
 router.post(
   '/',
@@ -45,7 +40,8 @@ router.post(
  * @swagger
  * /orders/{id}:
  *   put:
- *     summary: Update an existing order
+ *     summary: Update an order (AUTH REQUIRED)
+ *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  */
@@ -59,7 +55,8 @@ router.put(
  * @swagger
  * /orders/{id}:
  *   delete:
- *     summary: Delete an order
+ *     summary: Delete an order (AUTH REQUIRED)
+ *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  */

@@ -46,6 +46,12 @@ router.get('/', itemsController.getAll);
  *   get:
  *     summary: Get a single item by ID
  *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  */
 router.get('/:id', itemsController.getSingle);
 
@@ -53,17 +59,10 @@ router.get('/:id', itemsController.getSingle);
  * @swagger
  * /items:
  *   post:
- *     summary: Create a new item
+ *     summary: Create a new item (AUTH REQUIRED)
  *     tags: [Items]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *     responses:
- *       201:
- *         description: Item created successfully
- *       401:
- *         description: Unauthorized
  */
 router.post(
   '/',
@@ -75,7 +74,7 @@ router.post(
  * @swagger
  * /items/{id}:
  *   put:
- *     summary: Update an existing item
+ *     summary: Update an item (AUTH REQUIRED)
  *     tags: [Items]
  *     security:
  *       - bearerAuth: []
@@ -90,7 +89,7 @@ router.put(
  * @swagger
  * /items/{id}:
  *   delete:
- *     summary: Delete an item
+ *     summary: Delete an item (AUTH REQUIRED)
  *     tags: [Items]
  *     security:
  *       - bearerAuth: []
