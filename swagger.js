@@ -1,23 +1,17 @@
-const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'CSE 341 Week 04 Project API',
+      title: 'Week 03 / 04 API',
       version: '1.0.0',
-      description: 'Items, Orders, and Authentication API'
+      description: 'CSE 341 Project API'
     },
     servers: [
-      {
-        url: 'https://cse-341-week03-project2-j4fd.onrender.com',
-        description: 'Production server'
-      },
-      {
-        url: 'http://localhost:3000',
-        description: 'Local server'
-      }
+      { url: 'http://localhost:3000' },
+      { url: 'https://cse-341-week03-project2-j4fd.onrender.com' }
     ],
     components: {
       securitySchemes: {
@@ -32,7 +26,7 @@ const options = {
   apis: ['./routes/*.js']
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJsdoc(options);
 
 module.exports = {
   swaggerUi,

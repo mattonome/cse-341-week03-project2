@@ -5,13 +5,13 @@ const passport = require('passport');
 
 const app = express();
 
-// Database
+// Database connection
 const connectDB = require('./config/database');
 
 // Routes
+const authRoutes = require('./routes/authRoutes');
 const itemsRoutes = require('./routes/items');
 const ordersRoutes = require('./routes/orders');
-const authRoutes = require('./routes/authRoutes');
 
 // Swagger
 const { swaggerUi, swaggerSpec } = require('./swagger');
@@ -20,7 +20,7 @@ const { swaggerUi, swaggerSpec } = require('./swagger');
 app.use(cors());
 app.use(express.json());
 
-// Passport
+// Passport JWT
 app.use(passport.initialize());
 require('./config/passport')(passport);
 
@@ -29,32 +29,22 @@ app.use('/auth', authRoutes);
 app.use('/items', itemsRoutes);
 app.use('/orders', ordersRoutes);
 
-// Swagger
+// Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Default
+// Default root route
 app.get('/', (req, res) => {
-  res.send('Week 03 Project API is running');
+  res.send('Week 03 / 04 Project API is running');
 });
 
-
-
-// Temporary check
-// console.log('ENV CHECK:', {
-//   MONGODB_URL: process.env.MONGODB_URL,
-//   DB_NAME: process.env.DB_NAME,
-//   JWT_SECRET: process.env.JWT_SECRET,
-// });
-
-
-// Env check
+// Environment variable check
 const PORT = process.env.PORT || 3000;
 if (!process.env.MONGODB_URL || !process.env.DB_NAME || !process.env.JWT_SECRET) {
   console.error('❌ Missing environment variables');
   process.exit(1);
 }
 
-// Start server
+// Start server after DB connection
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
